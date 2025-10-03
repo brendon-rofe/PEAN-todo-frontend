@@ -1,12 +1,22 @@
 import { useState } from "react";
 
-export default function AddTask({ onAdd }: { onAdd: (text: string) => void }) {
-  const [value, setValue] = useState("");
+type Props = { onAdd: (text: string) => Promise<void> | void };
 
-  const handleSubmit = () => {
-    if (value.trim()) {
-      onAdd(value);
-      setValue("");
+export default function AddTask({ onAdd }: Props) {
+  const [value, setValue] = useState("");
+  const [pending, setPending] = useState(false);
+
+  const submit = async () => {
+    const text = value.trim();
+    if (!text) return;
+    setPending(true);
+    try {
+      await onAdd(text);
+      setValue(""); // clear on success
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPending(false);
     }
   };
 
@@ -16,13 +26,15 @@ export default function AddTask({ onAdd }: { onAdd: (text: string) => void }) {
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder="Add a new task..."
+        disabled={pending}
         className="flex-1 rounded-lg border border-[#333] bg-[#1E1E1E] text-white h-14 px-4 focus:border-[#4A90E2] focus:outline-none"
       />
       <button
-        onClick={handleSubmit}
-        className="h-14 px-6 bg-[#4A90E2] text-white font-bold rounded-lg cursor-pointer"
+        onClick={submit}
+        disabled={pending || value.trim().length === 0}
+        className="h-14 px-6 bg-[#4A90E2] text-white font-bold rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Add
+        {pending ? "Adding…" : "Add"}
       </button>
     </div>
   );

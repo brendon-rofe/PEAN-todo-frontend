@@ -11,7 +11,7 @@ export async function fetchTodos(): Promise<Todo[]> {
 }
 
 export async function createTodo(description: string) {
-  const res = await fetch(`/api/create`, {
+  const res = await fetch(`${API_URL}/create`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ description }),

@@ -4,7 +4,7 @@ import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 import EmptyState from "./components/EmptyState";
 import type { Todo } from "./types/Todo";
-import { fetchTodos } from "./api/todos";
+import { fetchTodos, createTodo } from "./api/todos";
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -21,9 +21,12 @@ export default function App() {
     })();
   }, []);
 
-  const addTodo = (description: string) => {
-    setTodos([...todos, { id: Date.now(), description, done: false }]);
-  };
+  async function handleAdd(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const created: Todo = await createTodo(trimmed);
+    setTodos(prev => [...prev, created]);
+  }
 
   const toggleTodo = (id: number) => {
     setTodos(todos.map(t => t.id === id ? { ...t, done: !t.done } : t));
@@ -45,7 +48,7 @@ export default function App() {
     <div className="min-h-screen bg-[#121212] text-white flex flex-col items-center px-4 py-10">
       <div className="w-full max-w-[960px]">
         <Header />
-        <AddTask onAdd={addTodo} />
+        <AddTask onAdd={handleAdd} />
         {todos.length > 0 ? (
           <>
             <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
