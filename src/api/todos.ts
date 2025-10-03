@@ -9,3 +9,14 @@ export async function fetchTodos(): Promise<Todo[]> {
   }
   return res.json();
 }
+
+export async function createTodo(description: string) {
+  const res = await fetch(`/api/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ description }),
+  });
+  if (!res.ok) throw new Error(`Create failed: ${res.status}`);
+  return res.json(); // returns created Todo
+}
+
