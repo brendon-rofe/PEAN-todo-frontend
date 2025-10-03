@@ -41,7 +41,7 @@ export default function TodoItem({
           todo.done ? "line-through text-gray-500" : "text-white"
         }`}
       >
-        {todo.text}
+        {todo.description}
       </p>
       <button
         onClick={() => onDelete(todo.id)}

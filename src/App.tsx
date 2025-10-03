@@ -1,19 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 import EmptyState from "./components/EmptyState";
 import type { Todo } from "./types/Todo";
+import { fetchTodos } from "./api/todos";
 
 export default function App() {
-  const [todos, setTodos] = useState<Todo[]>([
-    { id: 1, text: "Design the user interface", done: false },
-    { id: 2, text: "Develop the front-end", done: true },
-    { id: 3, text: "Deploy the application", done: false },
-  ]);
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-  const addTodo = (text: string) => {
-    setTodos([...todos, { id: Date.now(), text, done: false }]);
+   useEffect(() => {
+    (async () => {
+      try {
+        const data = await fetchTodos();
+        console.log(data);
+        setTodos(data);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
+
+  const addTodo = (description: string) => {
+    setTodos([...todos, { id: Date.now(), description, done: false }]);
   };
 
   const toggleTodo = (id: number) => {
