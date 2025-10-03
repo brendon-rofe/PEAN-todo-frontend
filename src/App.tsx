@@ -4,7 +4,7 @@ import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 import EmptyState from "./components/EmptyState";
 import type { Todo } from "./types/Todo";
-import { fetchTodos, createTodo } from "./api/todos";
+import { fetchTodos, createTodo, deleteTodo } from "./api/todos";
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -32,7 +32,8 @@ export default function App() {
     setTodos(todos.map(t => t.id === id ? { ...t, done: !t.done } : t));
   };
 
-  const deleteTodo = (id: number) => {
+  async function handleDelete(id: number) {
+    await deleteTodo(id);
     setTodos(todos.filter(t => t.id !== id));
   };
 
@@ -51,7 +52,7 @@ export default function App() {
         <AddTask onAdd={handleAdd} />
         {todos.length > 0 ? (
           <>
-            <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
+            <TodoList todos={todos} onToggle={toggleTodo} onDelete={handleDelete} />
             <div className="flex justify-end gap-3 px-4 py-3">
               <button
                 onClick={selectAll}
