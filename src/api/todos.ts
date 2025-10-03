@@ -1,7 +1,6 @@
 import type { Todo } from "../types/Todo";
 
-const API_URL = "http://localhost:3000"; // adjust to your backend URL
-
+const API_URL = "http://localhost:3000";
 export async function fetchTodos(): Promise<Todo[]> {
   const res = await fetch(`${API_URL}/all`);
   if (!res.ok) {
@@ -17,6 +16,12 @@ export async function createTodo(description: string) {
     body: JSON.stringify({ description }),
   });
   if (!res.ok) throw new Error(`Create failed: ${res.status}`);
-  return res.json(); // returns created Todo
+  return res.json();
 }
 
+export async function deleteTodo(id: number) {
+  const res = await fetch(`${API_URL}/delete/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+}
