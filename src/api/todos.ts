@@ -7,7 +7,7 @@ export async function fetchTodos(): Promise<Todo[]> {
     throw new Error("Failed to fetch todos");
   }
   return res.json();
-}
+};
 
 export async function createTodo(description: string) {
   const res = await fetch(`${API_URL}/create`, {
@@ -17,11 +17,18 @@ export async function createTodo(description: string) {
   });
   if (!res.ok) throw new Error(`Create failed: ${res.status}`);
   return res.json();
-}
+};
 
 export async function deleteTodo(id: number) {
   const res = await fetch(`${API_URL}/delete/${id}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-}
+};
+
+export async function updateTodoStatus(id: number,) {
+  const res = await fetch(`${API_URL}/update-status/${id}`, {
+    method: "PUT",
+  });
+  if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+};
