@@ -1,4 +1,5 @@
 import type { Todo } from "../types/Todo";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export default function TodoItem({
   todo,
@@ -42,8 +43,11 @@ export default function TodoItem({
       >
         {todo.text}
       </p>
-      <button onClick={() => onDelete(todo.id)} className="text-gray-500 hover:text-white">
-        <span className="material-symbols-outlined">delete</span>
+      <button
+        onClick={() => onDelete(todo.id)}
+        className="text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
+      >
+        <TrashIcon className="h-6 w-6" />
       </button>
     </label>
   );

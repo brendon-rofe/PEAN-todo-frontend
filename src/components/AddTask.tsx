@@ -20,7 +20,7 @@ export default function AddTask({ onAdd }: { onAdd: (text: string) => void }) {
       />
       <button
         onClick={handleSubmit}
-        className="h-14 px-6 bg-[#4A90E2] text-white font-bold rounded-lg"
+        className="h-14 px-6 bg-[#4A90E2] text-white font-bold rounded-lg cursor-pointer"
       >
         Add
       </button>
