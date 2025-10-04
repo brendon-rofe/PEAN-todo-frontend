@@ -6,11 +6,13 @@ type Props = {
   todo: Todo;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
-  onEdit: (id: number, nextText: string) => void;
+  onEdit: (id: number, nextText: string) => Promise<void> | void;
 };
 
 export default function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
   const [editing, setEditing] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [value, setValue] = useState(todo.description);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,19 +23,27 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
     }
   }, [editing, todo.description]);
 
-  const submit = () => {
+  const submit = async () => {
     const trimmed = value.trim();
     if (!trimmed || trimmed === todo.description) {
       setEditing(false);
       return;
     }
-    onEdit(todo.id, trimmed);
-    setEditing(false);
+    setPending(true);
+    setError(null);
+    try {
+      await onEdit(todo.id, trimmed); // calls App -> API
+      setEditing(false);
+    } catch {
+      setError("Update failed. Please try again.");
+    } finally {
+      setPending(false);
+    }
   };
 
   const cancel = () => {
-    setValue(todo.description);
     setEditing(false);
+    setError(null);
   };
 
   return (
@@ -86,42 +96,36 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
       {/* inline edit form (only when editing) */}
       {editing && (
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
+          onSubmit={(e) => { e.preventDefault(); submit(); }}
           className="flex items-center gap-2 px-4"
         >
           <input
             ref={inputRef}
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                e.preventDefault();
-                cancel();
-              }
-            }}
+            onKeyDown={(e) => { if (e.key === "Escape") { e.preventDefault(); cancel(); } }}
+            disabled={pending}
             placeholder="Update task..."
-            className="flex-1 rounded-md border border-[#333] bg-[#1E1E1E] text-white h-10 px-3 text-sm focus:border-[#4A90E2] focus:outline-none"
+            className="flex-1 rounded-md border border-[#333] bg-[#1E1E1E] text-white h-10 px-3 text-sm focus:border-[#4A90E2] focus:outline-none disabled:opacity-50"
           />
           <button
             type="submit"
-            className="h-10 px-4 rounded-md bg-[#4A90E2] text-white text-sm font-bold"
+            disabled={pending}
+            className="h-10 px-4 rounded-md bg-[#4A90E2] text-white text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Update
+            {pending ? "Saving…" : "Update"}
           </button>
           <button
             type="button"
             onClick={cancel}
-            className="h-10 px-3 rounded-md border border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white text-sm font-medium"
-            title="Cancel"
-            aria-label="Cancel"
+            disabled={pending}
+            className="h-10 px-3 rounded-md border border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white text-sm font-medium disabled:opacity-50"
           >
-            <XMarkIcon className="h-5 w-5" />
+            Cancel
           </button>
+          {error && <span className="text-red-400 text-xs">{error}</span>}
         </form>
-      )}
+  )}
     </div>
   );
 };

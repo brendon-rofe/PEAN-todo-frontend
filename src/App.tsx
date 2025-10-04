@@ -3,8 +3,8 @@ import Header from "./components/Header";
 import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 import EmptyState from "./components/EmptyState";
-import type { Todo } from "./types/Todo";
-import { fetchTodos, createTodo, deleteTodo, updateTodoStatus } from "./api/todos";
+import type { Todo } from "./types/Todo"; 
+import { fetchTodos, createTodo, deleteTodo, updateTodoStatus, updateTodoDescription } from "./api/todos";
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -41,10 +41,18 @@ export default function App() {
     }
   };
 
-  const handleEditLocal = (id: number, nextText: string) => {
-    setTodos((list) =>
-      list.map((t) => (t.id === id ? { ...t, description: nextText } : t))
-    );
+  const handleEdit = async (id: number, nextText: string) => {
+    const prev = todos;
+    setTodos(list => list.map(t => (t.id === id ? { ...t, description: nextText } : t)));
+
+    try {
+      const updated = await updateTodoDescription(id, nextText);
+      setTodos(list => list.map(t => (t.id === id ? updated : t)));
+    } catch (e) {
+      console.error(e);
+      setTodos(prev);
+      throw e;
+    }
   };
 
   async function handleDelete(id: number) {
@@ -71,7 +79,7 @@ export default function App() {
               todos={todos}
               onToggle={handleTodoStatusChange}
               onDelete={handleDelete}
-              onEdit={handleEditLocal}
+              onEdit={handleEdit}
             />
             <div className="flex justify-end gap-3 px-4 py-3">
               <button
