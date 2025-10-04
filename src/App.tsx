@@ -64,8 +64,18 @@ export default function App() {
     setTodos(todos.map(t => ({ ...t, done: true })));
   };
 
-  const clearCompleted = () => {
-    setTodos(todos.filter(t => !t.done));
+  const clearCompleted = async () => {
+    const completedTodos = todos.filter(t => t.done);
+    if (completedTodos.length === 0) return;
+
+    const deletePromises = completedTodos.map(t => deleteTodo(t.id));
+
+    try {
+      await Promise.all(deletePromises);
+      setTodos(prev => prev.filter(t => !t.done));
+    } catch (err) {
+      console.error("Failed to clear completed todos:", err);
+    }
   };
 
   return (
