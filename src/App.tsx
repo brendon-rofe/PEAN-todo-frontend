@@ -41,6 +41,12 @@ export default function App() {
     }
   };
 
+  const handleEditLocal = (id: number, nextText: string) => {
+    setTodos((list) =>
+      list.map((t) => (t.id === id ? { ...t, description: nextText } : t))
+    );
+  };
+
   async function handleDelete(id: number) {
     await deleteTodo(id);
     setTodos(todos.filter(t => t.id !== id));
@@ -61,7 +67,12 @@ export default function App() {
         <AddTask onAdd={handleAdd} />
         {todos.length > 0 ? (
           <>
-            <TodoList todos={todos} onToggle={handleTodoStatusChange} onDelete={handleDelete} />
+            <TodoList
+              todos={todos}
+              onToggle={handleTodoStatusChange}
+              onDelete={handleDelete}
+              onEdit={handleEditLocal}
+            />
             <div className="flex justify-end gap-3 px-4 py-3">
               <button
                 onClick={selectAll}
