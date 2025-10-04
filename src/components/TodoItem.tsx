@@ -111,7 +111,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
           <button
             type="submit"
             disabled={pending}
-            className="h-10 px-4 rounded-md bg-[#4A90E2] text-white text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-10 px-4 rounded-md bg-[#4A90E2] text-white text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {pending ? "Saving…" : "Update"}
           </button>
@@ -119,7 +119,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
             type="button"
             onClick={cancel}
             disabled={pending}
-            className="h-10 px-3 rounded-md border border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white text-sm font-medium disabled:opacity-50"
+            className="h-10 px-3 rounded-md border border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white text-sm font-medium disabled:opacity-50 cursor-pointer"
           >
             Cancel
           </button>
