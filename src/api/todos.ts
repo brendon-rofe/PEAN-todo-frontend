@@ -49,4 +49,4 @@ export async function updateTodoDescription(id: number, description: string) {
     throw new Error(`Update description failed: ${res.status} ${res.statusText} — ${text}`);
   }
   return res.json();
-}
+};
