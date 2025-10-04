@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Todo } from "../types/Todo";
-import { TrashIcon, PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   todo: Todo;
