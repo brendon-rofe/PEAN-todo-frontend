@@ -36,4 +36,17 @@ export async function updateTodoStatus(id: number): Promise<Todo> {
     throw new Error(`Update status failed: ${res.status} ${res.statusText} — ${text}`);
   }
   return res.json();
+};
+
+export async function updateTodoDescription(id: number, description: string) {
+  const res = await fetch(`${API_URL}/update-description/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ description }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Update description failed: ${res.status} ${res.statusText} — ${text}`);
+  }
+  return res.json();
 }
