@@ -26,9 +26,14 @@ export async function deleteTodo(id: number) {
   if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
 };
 
-export async function updateTodoStatus(id: number,) {
+export async function updateTodoStatus(id: number): Promise<Todo> {
   const res = await fetch(`${API_URL}/update-status/${id}`, {
     method: "PUT",
+    headers: { "Content-Type": "application/json" },
   });
-  if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-};
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Update status failed: ${res.status} ${res.statusText} — ${text}`);
+  }
+  return res.json();
+}
