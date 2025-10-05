@@ -18,8 +18,6 @@ export default function App() {
     true
   );
 
-  const remaining = todos.filter(t => !t.done).length;
-
    useEffect(() => {
     (async () => {
       try {
