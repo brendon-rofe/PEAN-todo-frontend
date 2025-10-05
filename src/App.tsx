@@ -6,8 +6,19 @@ import EmptyState from "./components/EmptyState";
 import type { Todo } from "./types/Todo"; 
 import { fetchTodos, createTodo, deleteTodo, updateTodoStatus, updateTodoDescription } from "./api/todos";
 
+type Filter = "all" | "active" | "completed";
+
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const visibleTodos = todos.filter(t =>
+    filter === "active" ? !t.done :
+    filter === "completed" ? t.done :
+    true
+  );
+
+  const remaining = todos.filter(t => !t.done).length;
 
    useEffect(() => {
     (async () => {
@@ -85,8 +96,24 @@ export default function App() {
         <AddTask onAdd={handleAdd} />
         {todos.length > 0 ? (
           <>
+            <div className="px-4 py-2 flex items-center gap-2 text-sm">
+              {(["all","active","completed"] as const).map(f => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={[
+                    "px-3 py-1 rounded-md border transition-colors",
+                    filter === f
+                      ? "border-[#4A90E2] text-white"
+                      : "border-gray-700 text-gray-400 hover:text-white"
+                  ].join(" ")}
+                >
+                  {f[0].toUpperCase() + f.slice(1)}
+                </button>
+              ))}
+            </div>
             <TodoList
-              todos={todos}
+              todos={visibleTodos}
               onToggle={handleTodoStatusChange}
               onDelete={handleDelete}
               onEdit={handleEdit}
@@ -101,6 +128,7 @@ export default function App() {
               </button>
               <button
                 onClick={clearCompleted}
+                disabled={!todos.some(t => t.done)}
                 className="h-12 px-5 border border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg text-base font-bold"
               >
                 Clear Completed
