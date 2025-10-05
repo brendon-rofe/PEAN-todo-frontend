@@ -94,21 +94,27 @@ export default function App() {
         <AddTask onAdd={handleAdd} />
         {todos.length > 0 ? (
           <>
-            <div className="px-4 py-2 flex items-center gap-2 text-sm">
-              {(["all","active","completed"] as const).map(f => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={[
-                    "px-3 py-1 rounded-md border transition-colors",
-                    filter === f
-                      ? "border-[#4A90E2] text-white"
-                      : "border-gray-700 text-gray-400 hover:text-white"
-                  ].join(" ")}
-                >
-                  {f[0].toUpperCase() + f.slice(1)}
-                </button>
-              ))}
+            <div className="flex items-center justify-center p-4">
+              <div className="flex items-center gap-2 rounded-lg bg-[#1E1E1E] p-2">
+                {(["all","active","completed"] as const).map(f => {
+                  const active = filter === f;
+                  return (
+                    <button
+                      key={f}
+                      onClick={() => setFilter(f)}
+                      aria-pressed={active}
+                      className={[
+                        "flex min-w-[80px] items-center justify-center rounded-md px-4 py-2 text-sm transition-colors cursor-pointer",
+                        active
+                          ? "font-semibold bg-[#333] text-white"
+                          : "font-medium text-gray-400 hover:bg-[#2a2a2a]"
+                      ].join(" ")}
+                    >
+                      {f[0].toUpperCase() + f.slice(1)}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <TodoList
               todos={visibleTodos}
